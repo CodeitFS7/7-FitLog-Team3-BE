@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -11,4 +5,62 @@ generator client {
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+}
+
+model Journal {
+  id String @id @default(uuid())
+  title String
+  nickname String
+  description String
+  password String
+  background Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  routinePoint Int @default(0)
+  routine Routine []
+  routineCheck RoutineCheck[]
+  emoji Emoji[]
+  exerciseLog ExerciseLog[]
+}
+
+model Routine {
+  id String @id @default(uuid())
+  title String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  journalId String
+  journal Journal @relation(fields: [journalId], references: [id], onDelete:Cascade, onUpdate: Cascade)
+  @@unique([title,journalId])
+  routineCheck RoutineCheck[]
+}
+
+model RoutineCheck {
+  id String @id @default(uuid())
+  journalId String
+  routineId String
+  date DateTime @db.Date
+  isCompleted Boolean
+  journal Journal @relation(fields: [journalId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  routine Routine @relation(fields: [routineId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  @@unique([routineId, date])
+}
+
+model Emoji {
+  id String
+  journalId String
+  count Int
+  journal Journal @relation(fields: [journalId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  @@id([id,journalId])
+}
+
+model ExerciseLog {
+  id String @id @default(uuid())
+  startTime DateTime
+  endTime DateTime
+  journalId String
+  exercisePoint Int
+  goalTime Int
+  isCompleted Boolean
+  journal Journal @relation(fields: [journalId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  @@unique([startTime, journalId])
 }
