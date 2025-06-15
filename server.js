@@ -1,13 +1,11 @@
 import dotenv from 'dotenv';
 import express from 'express';
-import { PrismaClient } from '@prisma/client';
 import cors from 'cors';
 import morgan from 'morgan';
 
 // 환경 변수 사용준비
 dotenv.config();
 
-const prisma = new PrismaClient();
 const app = express();
 
 // 개발 편의상 모든 Origin 허용 (배포 시 origin 설정 필요)
