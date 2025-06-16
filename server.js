@@ -2,6 +2,7 @@ import dotenv from 'dotenv';
 import express from 'express';
 import cors from 'cors';
 import morgan from 'morgan';
+import { journalsRouter } from './src/domains/journals/routes/index.js';
 
 
 import journalsRouter from './src/domains/journals/routes/journalRoutes.js'; // 저널 관련 라우터 임포트
@@ -23,6 +24,13 @@ app.use('/journals', journalsRouter); // 저널 관련 라우터 등록
 // 테스트용 라우터
 app.get('/', (req, res) => {
   res.send('서버 실행 중');
+});
+
+app.use('/journals', journalsRouter);
+
+app.use((err, req, res, next) => {
+  console.log(err.message);
+  res.status(err.status ?? 500).json(err.message);
 });
 
 const PORT = process.env.PORT || 3000;
