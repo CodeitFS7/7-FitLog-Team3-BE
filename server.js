@@ -2,7 +2,8 @@ import dotenv from 'dotenv';
 import express from 'express';
 import cors from 'cors';
 import morgan from 'morgan';
-import { journalsRouter } from './src/domains/journals/routes/index.js';
+import routineRouter from './domains/routines/routes/route.js';
+import journalsRouter from './src/domains/journals/routes/index.js';
 
 // 환경 변수 사용준비
 dotenv.config();
@@ -13,6 +14,7 @@ const app = express();
 app.use(cors());
 app.use(morgan('dev'));
 app.use(express.json());
+app.use('/routines', routineRouter);
 
 // 테스트용 라우터
 app.get('/', (req, res) => {
