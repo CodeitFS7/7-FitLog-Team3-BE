@@ -13,3 +13,6 @@ const controller = new JournalsController(service);
 
 journalsRouter.post('/', validateCreateJournal, controller.createJournal);
 journalsRouter.get('/', validateGetJournalsQuery, controller.getJournals);
+
+journalsRouter.patch('/:id', controller.getJournals);
+journalsRouter.delete('/:id', controller.deleteJournal);

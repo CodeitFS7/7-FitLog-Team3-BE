@@ -68,4 +68,12 @@ export class JournalsService {
       totalCount: totalCount,
     };
   };
+
+  deleteJournalById = async (id) => {
+    const journal = await findById(id);
+    if (!journal) {
+      throw new Error('존재하지 않는 journal입니다.');
+    }
+    return await deleteById(id);
+  };
 }
