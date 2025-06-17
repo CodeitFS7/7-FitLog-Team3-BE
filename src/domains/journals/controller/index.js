@@ -20,4 +20,15 @@ export class JournalsController {
       next(error);
     }
   };
+
+  getJournals = async (req, res, next) => {
+    try {
+      const queryParams = req.query;
+      const journalsData = await this.journalsService.findAllJournals(queryParams);
+
+      return res.status(200).json({ data: journalsData });
+    } catch (error) {
+      next(error);
+    }
+  };
 }
