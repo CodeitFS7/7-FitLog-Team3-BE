@@ -3,6 +3,9 @@ import { deleteJournal, updateJournal } from '../controller/journalController.js
 
 const router = express.Router();
 
+// 운동일지 수정 API
+router.patch('/:id', updateJournal);
+
 // 운동일지 삭제 API
 router.delete('/:id', deleteJournal);
 

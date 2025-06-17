@@ -13,3 +13,4 @@ export const deleteById = async (id) => {
     where: { id },
   });
 };
+
