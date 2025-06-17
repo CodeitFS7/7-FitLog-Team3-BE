@@ -31,4 +31,15 @@ export class JournalsController {
       next(error);
     }
   };
+
+  // DELETE /journals/:id 요청을 처리하는 컨트롤러
+  deleteJournal = async (req, res) => {
+    try {
+      const { id } = req.params;
+      await deleteJournalById(id);
+      res.status(404).send();
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  };
 }
