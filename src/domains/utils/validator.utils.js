@@ -14,6 +14,11 @@ export const isValidPasswordCombination = (password) => {
   return combinaionRegex.test(password);
 };
 
+// 값이 문자열인지 확인하는 함수
+export const isString = (value) => {
+  return typeof value === 'string';
+};
+
 // 값이 정수인지 확인하는 함수
 export const isInteger = (value) => {
   return Number.isInteger(value);

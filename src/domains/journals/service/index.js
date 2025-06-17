@@ -19,4 +19,53 @@ export class JournalsService {
     createdJournal.password = undefined;
     return createdJournal;
   };
+
+  findAllJournals = async (queryParams) => {
+    const { page = 1, pageSize = 6, keyword = '', orderBy = 'newest' } = queryParams;
+
+    const prismaOptions = {
+      skip: (parseInt(page, 10) - 1) * parseInt(pageSize, 10),
+      take: parseInt(pageSize, 10),
+    };
+
+    switch (orderBy) {
+      case 'oldest':
+        prismaOptions.orderBy = { createdAt: 'asc' };
+        break;
+      case 'routinePointHighest':
+        prismaOptions.orderBy = { routinePoint: 'desc' };
+        break;
+      case 'routinePointLowest':
+        prismaOptions.orderBy = { routinePoint: 'asc' };
+        break;
+      case 'newest':
+      default:
+        prismaOptions.orderBy = { createdAt: 'desc' };
+        break;
+    }
+
+    if (keyword) {
+      prismaOptions.where = {
+        OR: [
+          { title: { contains: keyword, mode: 'insensitive' } },
+          { nickname: { contains: keyword, mode: 'insensitive' } },
+          { description: { contains: keyword, mode: 'insensitive' } },
+        ],
+      };
+    }
+
+    const [journals, totalCount] =
+      await this.journalsRepository.findAllJournalsWithOptions(prismaOptions);
+
+    // 보안을 위해 응답 데이터에서 비밀번호 필드를 제거
+    const journalsWithoutPassword = journals.map((journal) => {
+      const { password, ...rest } = journal;
+      return rest;
+    });
+
+    return {
+      journals: journalsWithoutPassword,
+      totalCount: totalCount,
+    };
+  };
 }
