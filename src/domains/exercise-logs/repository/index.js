@@ -1,3 +1,5 @@
+import { prisma } from '../../utils/prisma.js';
+
 class ExerciseLogRepository {
   constructor(prismaClient) {
     this.prisma = prismaClient;
