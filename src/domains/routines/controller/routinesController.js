@@ -1,4 +1,5 @@
-import { routinesService } from '../services/routinesService.js';
+import { routinesService } from '../service/routinesService.js';
+
 
 export class RoutinesController {
   constructor() {
