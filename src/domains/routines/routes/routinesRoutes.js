@@ -6,8 +6,7 @@ import { validateRoutineUpdate } from '../../middlewares/validateRoutineUpdate.j
 
 const router = express.Router();
 
-router.post("/routines/:journalId", validateRoutineCreation, routinesController.createRoutine);
-router.patch("/routines/:journalId", validateRoutineUpdate, routinesController.updateRoutine);
-router.get("/routines", routinesController.getPosts);
+router.post("/journals/:journalId/routines", validateRoutineCreation, routinesController.createRoutine);
+router.patch("/routines/:routineId", validateRoutineUpdate, routinesController.updateRoutine);
 
 export default router; 

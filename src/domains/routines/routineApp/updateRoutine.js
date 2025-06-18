@@ -39,9 +39,10 @@ class UpdateRoutine {
      try {
             const updatedRoutine = await this.routinesRepository.findByIdAndUpdate(routineId, dataToUpdate);
             return updatedRoutine;
-        } catch (error) 
-        throw error;
+        } catch (error) {
+            throw error;
         }
+    }
 }
 
-export default UpdateRoutine;
+export const updateRoutine = new UpdateRoutine(routinesRepository); 
