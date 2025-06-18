@@ -14,7 +14,6 @@ const controller = new JournalsController(service);
 
 journalsRouter.post('/', validateCreateJournal, controller.createJournal);
 journalsRouter.get('/', validateGetJournalsQuery, controller.getJournals);
-
 journalsRouter.get('/:journalId', validateJournalIdParam, controller.getJournalById);
-journalsRouter.patch('/:id', controller.getJournals);
+journalsRouter.patch('/:id', controller.updateJournal);
 journalsRouter.delete('/:id', controller.deleteJournal);

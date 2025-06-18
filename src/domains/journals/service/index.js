@@ -81,10 +81,18 @@ export class JournalsService {
   };
 
   deleteJournalById = async (id) => {
-    const journal = await findById(id);
+    const journal = await this.journalsRepository.findById(id);
     if (!journal) {
       throw new Error('존재하지 않는 journal입니다.');
     }
-    return await deleteById(id);
+    return await this.journalsRepository.deleteById(id);
   };
-}
+
+  updateJournalById = async (id, updateData) => {
+    const journal = await this.journalsRepository.findById(id);
+    if (!journal) {
+      throw new Error('존재하지 않는 journal입니다.');
+    }
+    return await this.journalsRepository.updateById(id, updateData);
+  };
+};
