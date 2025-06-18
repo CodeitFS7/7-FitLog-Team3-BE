@@ -24,6 +24,14 @@ export class JournalsRepository {
     return [journals, totalCount];
   };
 
+  findJournalById = async (journalId) => {
+    const journal = await prisma.journal.findUnique({
+      where: { id: journalId },
+    });
+
+    return journal;
+  };
+
   // id로 journal을 조회하는 함수
   findById = async (id) => {
     return await prisma.journal.findUnique({
