@@ -25,7 +25,7 @@ export const validateJournalPassword = async (req, res, next) => {
       return res.status(403).json({ message: "비밀번호가 일치하지 않습니다." });
     }
 
-    req.Journal = Journal; // 
+    req.Journal = Journal; 
     next();
   } catch (err) {
     console.error("비밀번호 확인 오류:", err);
