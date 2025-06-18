@@ -1,9 +1,11 @@
-import prisma from "../prismaClient.js";
+class ExerciseLogRepository {
+  constructor(prismaClient) {
+    this.prisma = prismaClient;
+  }
 
-class exerciseLogRepository {
   async create(data) {
-    return await prisma.exerciseLog.create({ data });
+    return await this.prisma.exerciseLog.create({ data });
   }
 }
 
-export default exerciseLogRepository;
+export default ExerciseLogRepository;

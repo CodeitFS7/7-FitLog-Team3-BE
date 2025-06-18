@@ -1,9 +1,9 @@
 import exerciseLogService from "../service/index.js";
 
 
-class exerciselogController {
-    constructor(exerciseLogService) {
-        this.exerciseLogService = exerciseLogService;
+class ExerciselogController {
+    constructor(ExerciseLogService) {
+        this.ExerciseLogService = ExerciseLogService;
       }
 
 //POST
@@ -23,7 +23,7 @@ class exerciselogController {
 
         // 숫자를 분:초로 변환
         const [minStr, secStr]=goalTime.split(":");
-        const min = parseInt(minString, 10);
+        const min = parseInt(minStr, 10);
         const sec = parseInt(secStr, 10);
     
         // 분:초가 숫자가 아닌 것이 입력되면 에러
@@ -31,7 +31,7 @@ class exerciselogController {
             throw Error("목표시간은 숫자 형식이어야 합니다.");
         }
 
-        const result = await this.exerciseLogService.create({
+        const result = await this.ExerciseLogService.create({
             journalId,
             startTime,
             endTime,
@@ -42,4 +42,4 @@ class exerciselogController {
     };
 }
 
-export default exerciselogController;
+export default ExerciselogController;
