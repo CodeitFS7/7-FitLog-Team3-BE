@@ -11,7 +11,7 @@ class UpdateRoutine {
         if (!existingRoutine) {
             throw new Error('업데이트할 루틴을 찾을 수 없습니다.');
         }
-    /* 변경사항 여부 확인*/ 
+    /* 업데이트 사항 여부 확인*/ 
         let hasChanges = false;
         const dataToUpdate = {};
 
@@ -22,7 +22,7 @@ class UpdateRoutine {
                     existingRoutine.journalId, 
                     updateData.title
                 );
-
+/* 루틴 이름 중복 검사 */
                 if (existingRoutineWithSameTitle) {
                     throw new Error('일지에 이미 존재하는 루틴입니다.');
                 }
@@ -31,7 +31,7 @@ class UpdateRoutine {
                 dataToUpdate.title = updateData.title;
             }
         }
-        
+/* 변경사항 여부에 따른 업데이트 반영(없을 시 업데이트x) */
          if (!hasChanges) {
             return { message: "변경 사항이 존재하지 않습니다", routine: existingRoutine };
         }
