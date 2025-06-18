@@ -45,4 +45,12 @@ export class JournalsRepository {
       where: { id },
     });
   };
-}
+
+  // id로 journal을 수정하는 함수
+  updateById = async (id, updateData) => {
+    return await prisma.journal.update({
+      where: { id },
+      data: updateData,
+    });
+  };
+};
