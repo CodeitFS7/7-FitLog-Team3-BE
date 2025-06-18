@@ -2,7 +2,7 @@ import { routinesRepository } from '../repository/routinesRepository.js';
 import { journalsRepository } from '../../journals/repository/journalsRepository.js';
 
 class CreateRoutine {
-    constructor(routinesRepository /*, journalsRepository */) {
+    constructor(routinesRepository , journalsRepository ) {
         this.routinesRepository = routinesRepository;
   }
    async execute(journalId, routineData) {
@@ -12,22 +12,28 @@ class CreateRoutine {
                 throw new Error('루틴을 생성할 저널을 찾을 수 없습니다.');
             }
         }
-    
+
+     const existingRoutineWithSameTitle = await this.routinesRepository.findByJournalIdAndTitle(
+            journalId,
+            routineData.title
+        );
+
+        if (existingRoutineWithSameTitle) {
+            throw new Error('일지에 이미 존재하는 루틴입니다.');
+        }
     const dataToCreate = {
         title: routineData.title,
         journalId: journalId,
     };
 
-    if (existingRoutineWithSameTitle) {
-            throw new Error('일지에 이미 존재하는 루틴입니다.');
-        }
-
-    try {
+     try {
             const newRoutine = await this.routinesRepository.create(dataToCreate);
             return newRoutine;
-        } catch (error) 
-    throw error;
-  }
+        } catch (error) {
+            // 여전히 예측 불가능한 데이터베이스 오류는 그대로 던집니다.
+            throw error;
+        }
+    }
 }
 
 export const createRoutine = new CreateRoutine(routinesRepository, journalsRepository);
