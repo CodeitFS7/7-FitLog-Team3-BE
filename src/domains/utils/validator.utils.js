@@ -19,6 +19,7 @@ export const isString = (value) => {
   return typeof value === 'string';
 };
 
+
 // 값이 정수인지 확인하는 함수
 export const isInteger = (value) => {
   return Number.isInteger(value);
@@ -29,8 +30,10 @@ export const isNumberInRange = (number, min, max) => {
   return typeof number == 'number' && min <= number && number <= max;
 };
 
+
 // 아이디가 uuid 형식이 맞는지 확인하는 함수
 export const isUUID = (value) => {
   const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
   return typeof value === 'string' && uuidRegex.test(value);
 };
+

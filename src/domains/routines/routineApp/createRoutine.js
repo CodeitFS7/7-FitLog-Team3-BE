@@ -1,5 +1,5 @@
-import { routinesRepository } from '../repository/routinesRepository.js';
-import { journalsRepository } from '../../journals/repository/journalsRepository.js';
+import { RoutinesRepository } from '../repository/routinesRepository.js';
+import { JournalsRepository } from '../../journals/repository/journalsRepositury.js';
 
 class CreateRoutine {
     constructor(routinesRepository , journalsRepository ) {
@@ -37,7 +37,7 @@ class CreateRoutine {
     }
 }
 
-export const createRoutine = new CreateRoutine(routinesRepository, journalsRepository);
+export const createRoutine = new CreateRoutine(RoutinesRepository, JournalsRepository);
 
 /* CreateRoutine이라는 특정 루틴 생성 비즈니스 로직을 담당하는 객체를 생성하는데, 
 이 객체가 데이터베이스와 상호작용하기 위해 필요한 routinesRepository와 journalsRepository라는 도구들을 외부에서 주입받아 사용하도록 설정한 후, 
