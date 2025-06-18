@@ -1,10 +1,20 @@
-import { CreateRoutine } from "../routineApp/createRoutine.js"
-import { UpdateRoutine } from "../routineApp/updateRoutine.js"
+import { createRoutine } from "../routineApp/createRoutine.js";
+import { updateRoutine } from "../routineApp/updateRoutine.js";
 
 class RoutinesService {
-    constructor(routinesService) {
-      this.routinesService = routinesService;
+    constructor() {
+        this.createRoutineUseCase = createRoutine;
+        this.updateRoutineUseCase = updateRoutine;
+        /* this.deleteRoutineUseCase = deleteRoutine;
+        this.getRoutineByIdUseCase = getRoutineById;
+        this.getRoutineListByJournalIdUseCase = getRoutineListByJournalId;*/
+    }
+      async create(journalId, routineData) {
+        return await this.createRoutineUseCase.execute(journalId, routineData);
+    }
+    async update(routineId, updateData) {
+        return await this.updateRoutineUseCase.execute(routineId, updateData);
     }
 }
 
-export default RoutinesService;
+export const routinesService = new RoutinesService();
