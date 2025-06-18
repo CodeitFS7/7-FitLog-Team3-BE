@@ -32,6 +32,17 @@ export class JournalsController {
     }
   };
 
+  getJournalById = async (req, res, next) => {
+    try {
+      const { journalId } = req.params;
+      const journal = await this.journalsService.getJournalById(journalId);
+
+      return res.status(200).json({ data: journal });
+    } catch (error) {
+      next(error);
+    }
+  };
+
   // DELETE /journals/:id 요청을 처리하는 컨트롤러
   deleteJournal = async (req, res) => {
     try {

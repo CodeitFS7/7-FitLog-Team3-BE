@@ -69,6 +69,17 @@ export class JournalsService {
     };
   };
 
+  getJournalById = async (journalId) => {
+    const journal = await this.journalsRepository.findJournalById(journalId);
+    if (!journal) {
+      const error = new Error('해당 ID의 일지를 찾을 수 없습니다.');
+      error.statusCode = 404;
+      throw error;
+    }
+    journal.password = undefined;
+    return journal;
+  };
+
   deleteJournalById = async (id) => {
     const journal = await findById(id);
     if (!journal) {
