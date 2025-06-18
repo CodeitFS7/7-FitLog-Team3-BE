@@ -3,7 +3,7 @@ import {
   isRequiredString,
 } from '../utils/validator.utils.js';
 
-export const validateCreateRoutines = (req, res, next) => {
+export const validateRoutineCreation = (req, res, next) => {
  try {
     const { title } = req.body;
     if (!isRequiredString(title)) {

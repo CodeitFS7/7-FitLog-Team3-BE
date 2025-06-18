@@ -29,4 +29,4 @@ class RoutinesRepository {
     }
 }
 
-export const routinesRepository = new RoutinesRepository();
+export { RoutinesRepository }

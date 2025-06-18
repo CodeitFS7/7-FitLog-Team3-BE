@@ -1,12 +1,11 @@
 import express from 'express';
-import { journalController } from '../controller/journalController.js';
-import { validateJournalCreation } from '../../middlewares/validateJournalCreation.js';
-import { validateJournalPassword } from '../../middlewares/validateJournalPassword.js';
+import { journalsController } from '../controller/journalsController.js';
+// import { validateJournalPassword } from '../../middlewares/validateJournalPassword.js';
 
 const router = express.Router();
 
-router.post("/journal/", validateJournalPassword, validateJournalCreation, journalController.createJournal);
-router.patch("/journal/:Id", validateJournalPassword, journalController.updateJournal);
-router.get("/journal", journalController.getPosts);
+
+router.patch("/journal/:Id", validateJournalPassword, journalsController.updateJournal);
+router.get("/journal", journalsController.getPosts);
 
 export default router;

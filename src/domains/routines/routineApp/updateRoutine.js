@@ -1,4 +1,4 @@
-import { routinesRepository } from '../repository/routinesRepository.js';
+import { RoutinesRepository } from '../repository/routinesRepository.js';
 
 class UpdateRoutine {
     constructor(updateRoutine) {
@@ -45,4 +45,4 @@ class UpdateRoutine {
     }
 }
 
-export const updateRoutine = new UpdateRoutine(routinesRepository); 
+export const updateRoutine = new UpdateRoutine(RoutinesRepository); 
