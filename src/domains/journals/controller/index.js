@@ -47,10 +47,30 @@ export class JournalsController {
   deleteJournal = async (req, res) => {
     try {
       const { id } = req.params;
-      await deleteJournalById(id);
-      res.status(404).send();
+      await this.journalsService.deleteJournalById(id);
+      res.status(204).send();
     } catch (error) {
-      res.status(500).json({ message: error.message });
+      if (error.message === '존재하지 않는 journal입니다.') {
+        res.status(404).json({ message: error.message });
+      } else {
+        res.status(500).json({ message: error.message });
+      }
     }
   };
-}
+
+  // PATCH /journals/:id 요청을 처리하는 컨트롤러
+  updateJournal = async (req, res) => {
+    try {
+      const { id } = req.params;
+      const updateData = req.body;
+      const updatedJournal = await this.journalsService.updateJournalById(id, updateData);
+      res.status(200).json(updatedJournal);
+    } catch (error) {
+      if (error.message === '존재하지 않는 journal입니다.') {
+        res.status(404).json({ message: error.message });
+      } else {
+        res.status(500).json({ message: error.message });
+      }
+    }
+  }
+};
