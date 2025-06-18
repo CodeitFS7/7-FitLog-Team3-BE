@@ -60,3 +60,4 @@ export const validateCreateJournal = (req, res, next) => {
     next(error);
   }
 };
+
