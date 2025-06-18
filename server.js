@@ -2,8 +2,8 @@ import dotenv from 'dotenv';
 import express from 'express';
 import cors from 'cors';
 import morgan from 'morgan';
-import routineRouter from './domains/routines/routes/route.js';
-import journalsRouter from './src/domains/journals/routes/index.js';
+import routineRouter from './src/domains/routines/routes/route.js';
+import { journalsRouter } from './src/domains/journals/routes/index.js';
 
 // 환경 변수 사용준비
 dotenv.config();

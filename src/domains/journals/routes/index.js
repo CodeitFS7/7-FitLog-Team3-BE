@@ -4,6 +4,7 @@ import { JournalsService } from '../service/index.js';
 import { JournalsRepository } from '../repository/index.js';
 import { validateCreateJournal } from '../../middlewares/validateJournalCreation.js';
 import { validateGetJournalsQuery } from '../../middlewares/validateGetJournalsQuery.js';
+import { validateJournalIdParam } from '../../middlewares/validateJournalIdParam.js';
 
 export const journalsRouter = Router();
 
@@ -14,5 +15,6 @@ const controller = new JournalsController(service);
 journalsRouter.post('/', validateCreateJournal, controller.createJournal);
 journalsRouter.get('/', validateGetJournalsQuery, controller.getJournals);
 
+journalsRouter.get('/:journalId', validateJournalIdParam, controller.getJournalById);
 journalsRouter.patch('/:id', controller.getJournals);
 journalsRouter.delete('/:id', controller.deleteJournal);
