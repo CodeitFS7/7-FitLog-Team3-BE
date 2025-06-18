@@ -1,7 +1,7 @@
-// service/exerciseLogService.js
+
 class ExerciseLogService {
-    constructor(exerciseLogRepository) {
-      this.exerciseLogRepository = exerciseLogRepository;
+    constructor(ExerciseLogRepository) {
+      this.ExerciseLogRepository = ExerciseLogRepository;
     }
   
     async create({journalId, startTime, endTime, goalTime }) {
@@ -25,15 +25,18 @@ class ExerciseLogService {
         earnedPoints
       };
   
-      const savedlog = await this.exerciseLogRepository.create(logData);
+      const savedLog = await this.ExerciseLogRepository.create(logData);
   
       return {
         message: `${earnedPoints} 포인트를 획득했습니다.`,
         isCompleted,
         earnedPoints,
-        savedlog,
+        savedLog,
       };
     }
   }
   
+
+
+
   export default ExerciseLogService;

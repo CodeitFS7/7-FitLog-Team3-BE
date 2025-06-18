@@ -4,6 +4,8 @@ import cors from 'cors';
 import morgan from 'morgan';
 import routineRouter from './src/domains/routines/routes/route.js';
 import { journalsRouter } from './src/domains/journals/routes/index.js';
+import { exerciseLogRouter } from './src/domains/exercise-logs/routes';
+
 
 // 환경 변수 사용준비
 dotenv.config();
@@ -20,6 +22,9 @@ app.use('/routines', routineRouter);
 app.get('/', (req, res) => {
   res.send('서버 실행 중');
 });
+app.use('/exerciseLoge', exerciseLogRouter);
+
+
 
 app.use('/journals', journalsRouter);
 
