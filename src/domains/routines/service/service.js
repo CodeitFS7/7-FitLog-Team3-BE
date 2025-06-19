@@ -81,7 +81,7 @@ export class RoutinesService {
     }
   }
 
-  async getAllRoutines(journalId) {
+  getAllRoutines = async (journalId) => {
     try {
       return await this.routinesRepository.findJournalById(journalId);
     } catch (err) {
@@ -89,9 +89,9 @@ export class RoutinesService {
       error.status = 500;
       throw error;
     }
-  }
+  };
 
-  async deleteRoutine(id, userId) {
+  deleteRoutine = async (id, userId) => {
     const routine = await this.routinesRepository.findById(id);
 
     if (!routine) {
@@ -113,5 +113,5 @@ export class RoutinesService {
       error.status = 500;
       throw error;
     }
-  }
+  };
 }
