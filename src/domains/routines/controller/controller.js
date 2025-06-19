@@ -22,34 +22,19 @@ export class RoutinesController {
     }
   };
 
-  async updateRoutine(req, res) {
+  updateRoutine = async (req, res, next) => {
     try {
       const { routineId } = req.params;
       const updateData = req.body;
-
-      const result = await this.routinesService.update(routineId, updateData);
-
-      if (result && result.message === '변경 사항이 없어 루틴을 업데이트하지 않았습니다.') {
-        return res.status(200).json({ message: result.message, routine: result.routine });
-      }
-
+      const result = await this.routinesService.updateRoutineById(routineId, updateData);
       res.status(200).json({
         message: '루틴 수정이 성공했습니다.',
         routine: result,
       });
     } catch (error) {
-      if (error.message === '업데이트할 루틴을 찾을 수 없습니다.') {
-        return res.status(404).json({ message: error.message });
-      } else if (error.message === '일지에 이미 존재하는 루틴입니다.') {
-        return res.status(409).json({ message: error.message });
-      } else if (error.message === '루틴 업데이트에 실패했습니다.') {
-        return res.status(500).json({ message: error.message });
-      } else {
-        console.error('루틴 업데이트 중 알 수 없는 오류 발생:', error);
-        return res.status(500).json({ message: '알 수 없는 서버 오류가 발생했습니다.' });
-      }
+      next(error);
     }
-  }
+  };
 
   getAllRoutines = async (req, res) => {
     const { journalId } = req.query;
