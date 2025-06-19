@@ -6,6 +6,7 @@ import { validateCreateJournal } from '../../middlewares/validateJournalCreation
 import { validateGetJournalsQuery } from '../../middlewares/validateGetJournalsQuery.js';
 import { validateJournalIdParam } from '../../middlewares/validateJournalIdParam.js';
 import { emojisRouter } from '../../emojis/routes/index.js';
+import { validatePatchJournals } from '../../middlewares/validatePatchJournals.js';
 
 export const journalsRouter = Router();
 
@@ -16,7 +17,7 @@ const controller = new JournalsController(service);
 journalsRouter.post('/', validateCreateJournal, controller.createJournal);
 journalsRouter.get('/', validateGetJournalsQuery, controller.getJournals);
 journalsRouter.get('/:journalId', validateJournalIdParam, controller.getJournalById);
-journalsRouter.patch('/:id', controller.updateJournal);
-journalsRouter.delete('/:id', controller.deleteJournal);
+journalsRouter.patch('/:journalId', validatePatchJournals, controller.updateJournalById);
+journalsRouter.delete('/:journalId', validateJournalIdParam, controller.deleteJournalById);
 
 journalsRouter.use('/:journalId/emojis', emojisRouter);
