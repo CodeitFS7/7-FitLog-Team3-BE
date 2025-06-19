@@ -1,4 +1,3 @@
-/* 해당 파일은 통일성 및 참조를 위해 참고용도로 dev 브런치에 있는 파일을 넣었습니다. */
 import {
   isInteger,
   isLengthBetween,
