@@ -36,50 +36,42 @@ export class RoutinesService {
     return newRoutine;
   };
 
-  async update(routineId, updateData) {
+  updateRoutineById = async (routineId, updateData) => {
     // 루틴 존재 여부 확인
-    const existingRoutine = await this.routinesRepository.findById(routineId);
+    const existingRoutine = await this.routinesRepository.findRoutineById(routineId);
     if (!existingRoutine) {
-      throw new Error('업데이트할 루틴을 찾을 수 없습니다.');
+      const error = new Error('업데이트할 루틴을 찾을 수 없습니다.');
+      error.statusCode = 404;
+      throw error;
     }
 
     // 업데이트 사항 여부 확인 및 중복 검사
-    let hasChanges = false;
-    const dataToUpdate = {};
-
-    // title 변경 시 중복 검사 및 업데이트 데이터 설정
-    if (updateData.title !== undefined) {
-      if (updateData.title !== existingRoutine.title) {
-        const existingRoutineWithSameTitle = await this.routinesRepository.findByJournalIdAndTitle(
-          existingRoutine.journalId,
-          updateData.title
-        );
-        // 같은 저널 내에서 루틴 이름 중복 검사
-        if (existingRoutineWithSameTitle) {
-          throw new Error('일지에 이미 존재하는 루틴입니다.');
-        }
-        hasChanges = true;
-        dataToUpdate.title = updateData.title;
+    if (updateData.title && updateData.title !== existingRoutine.title) {
+      const existingRoutineWithSameTitle = await this.routinesRepository.findByJournalIdAndTitle(
+        existingRoutine.journalId,
+        updateData.title
+      );
+      if (existingRoutineWithSameTitle) {
+        const error = new Error('일지에 이미 존재하는 루틴입니다.');
+        error.statusCode = 409;
+        throw error;
       }
     }
 
     // 변경 사항이 없을 경우 업데이트를 진행하지 않음
-    if (!hasChanges) {
-      return { message: '변경 사항이 존재하지 않습니다', routine: existingRoutine };
+    if (!updateData.title || updateData.title === existingRoutine.title) {
+      return {
+        message: '변경 사항이 없어 루틴을 업데이트하지 않았습니다.',
+        routine: existingRoutine,
+      };
     }
 
-    // 루틴 업데이트 시도
-    try {
-      const updatedRoutine = await this.routinesRepository.findByIdAndUpdate(
-        routineId,
-        dataToUpdate
-      );
-      return updatedRoutine;
-    } catch (error) {
-      console.error('루틴 업데이트 중 오류 발생:', error);
-      throw new Error('루틴 업데이트에 실패했습니다.');
-    }
-  }
+    const updatedRoutine = await this.routinesRepository.updateRoutineById(routineId, updateData);
+    return {
+      message: '루틴이 성공적으로 수정되었습니다.',
+      routine: updatedRoutine,
+    };
+  };
 
   getAllRoutines = async (journalId) => {
     try {
