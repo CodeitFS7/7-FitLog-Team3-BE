@@ -14,3 +14,8 @@ const controller = new ExerciseLogController(service);
 exerciseLogRouter.post('/exercise-logs', (req, res, next) => {
   controller.create(req, res, next);
 });
+
+//GET /exercise-logs
+exerciseLogRouter.get('/exercise-logs/:journalId', (req, res, next) => {
+  controller.getLatestLogWithSummary(req, res, next);
+});
