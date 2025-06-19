@@ -24,23 +24,23 @@ export class RoutinesRepository {
     });
   }
 
-  async findByJournalId(journalId) {
+  findByJournalId = async (journalId) => {
     return prisma.routine.findMany({
       where: { journalId },
       orderBy: { createdAt: 'desc' },
     });
-  }
+  };
 
-  async findById(id) {
+  findById = async (id) => {
     return prisma.routine.findUnique({
       where: { id },
       include: { journal: true },
     });
-  }
+  };
 
-  async deleteById(id) {
+  deleteById = async (id) => {
     return prisma.routine.delete({
       where: { id },
     });
-  }
+  };
 }
