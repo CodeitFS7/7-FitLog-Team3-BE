@@ -44,33 +44,25 @@ export class JournalsController {
   };
 
   // DELETE /journals/:id 요청을 처리하는 컨트롤러
-  deleteJournal = async (req, res) => {
+  deleteJournalById = async (req, res, next) => {
     try {
-      const { id } = req.params;
-      await this.journalsService.deleteJournalById(id);
-      res.status(204).send();
+      const { journalId } = req.params;
+      await this.journalsService.deleteJournalById(journalId);
+      return res.status(204).send();
     } catch (error) {
-      if (error.message === '존재하지 않는 journal입니다.') {
-        res.status(404).json({ message: error.message });
-      } else {
-        res.status(500).json({ message: error.message });
-      }
+      next(error);
     }
   };
 
   // PATCH /journals/:id 요청을 처리하는 컨트롤러
-  updateJournal = async (req, res) => {
+  updateJournalById = async (req, res, next) => {
     try {
-      const { id } = req.params;
+      const { journalId } = req.params;
       const updateData = req.body;
-      const updatedJournal = await this.journalsService.updateJournalById(id, updateData);
-      res.status(200).json(updatedJournal);
+      const updatedJournal = await this.journalsService.updateJournalById(journalId, updateData);
+      res.status(200).json({ data: updatedJournal });
     } catch (error) {
-      if (error.message === '존재하지 않는 journal입니다.') {
-        res.status(404).json({ message: error.message });
-      } else {
-        res.status(500).json({ message: error.message });
-      }
+      next(error);
     }
-  }
-};
+  };
+}
