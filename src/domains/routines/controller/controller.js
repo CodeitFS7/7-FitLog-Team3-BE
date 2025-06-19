@@ -36,38 +36,30 @@ export class RoutinesController {
     }
   };
 
-  getAllRoutines = async (req, res) => {
-    const { journalId } = req.query;
-
-    if (!journalId) {
-      return res.status(400).json({ message: 'journalId is required.' });
-    }
-
-    if (!isUUID(journalId)) {
-      return res.status(400).json({ message: 'Invalid journalId format (UUID expected).' });
-    }
-
+  getAllRoutines = async (req, res, next) => {
     try {
+      const { journalId } = req.query;
+
+      // 유효성 검사는 미들웨어에서 진행하였습니다.
+      // middlewares 폴더의 validateGetRoutinesByJournalId 참고
       const routines = await this.routinesService.getAllRoutines(journalId);
-      res.status(200).json(routines);
-    } catch (err) {
-      res.status(err.status || 500).json({ message: err.message });
+
+      res.status(200).json({ data: routines });
+    } catch (error) {
+      // 에러 처리는 에러 라우터에게
+      next(error);
     }
   };
 
-  deleteRoutine = async (req, res) => {
-    const { id } = req.params;
-    const userId = req.user?.id;
-
-    if (!isUUID(id)) {
-      return res.status(400).json({ message: 'Invalid routine ID format (UUID expected).' });
-    }
-
+  deleteRoutine = async (req, res, next) => {
     try {
-      await this.routinesService.deleteRoutine(id, userId);
-      res.sendStatus(204);
-    } catch (err) {
-      res.status(err.status || 500).json({ message: err.message });
+      const { journalId } = req.query;
+      const { routineId } = req.params;
+
+      await this.routinesService.deleteRoutineById(journalId, routineId);
+      res.status(204).send();
+    } catch (error) {
+      next(error);
     }
   };
 }
