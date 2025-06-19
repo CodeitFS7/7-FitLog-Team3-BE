@@ -14,4 +14,15 @@ export class EmojisController {
       next(error);
     }
   };
+
+  getEmojisByJournalId = async (req, res, next) => {
+    try {
+      const { journalId } = req.params;
+
+      const emojis = await this.emojisService.getEmojisByJournalId(journalId);
+      return res.status(200).json({ data: emojis });
+    } catch (error) {
+      next(error);
+    }
+  };
 }
