@@ -1,9 +1,16 @@
 import express from 'express';
-import { getAllRoutines, deleteRoutine } from '../controller/controller.js';
+import { RoutineRepository } from '../repository/repository.js';
+import { RoutineService } from '../service/service.js';
+import { RoutineController } from '../controller/controller.js';
 
 const router = express.Router();
 
-router.get('/', getAllRoutines);
-router.delete('/:id', deleteRoutine);
+// 의존성 주입
+const repository = new RoutineRepository();
+const service = new RoutineService(repository);
+const controller = new RoutineController(service);
+
+router.get('/', controller.getAllRoutines.bind(controller));
+router.delete('/:id', controller.deleteRoutine.bind(controller));
 
 export default router;
