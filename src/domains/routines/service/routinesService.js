@@ -1,25 +1,90 @@
-import { createRoutine } from "../routineApp/createRoutine.js";
-import { updateRoutine } from "../routineApp/updateRoutine.js";
+import { RoutinesRepository } from '../repository/routinesRepository.js';
+import { JournalsRepository } from '../../journals/repository/journalsRepositury.js';
+
 
 class RoutinesService {
-    constructor() {
-        this.createRoutineUseCase = createRoutine;
-        this.updateRoutineUseCase = updateRoutine;
-        /* this.deleteRoutineUseCase = deleteRoutine;
-        this.getRoutineByIdUseCase = getRoutineById;
-        this.getRoutineListByJournalIdUseCase = getRoutineListByJournalId;*/
+    constructor(routinesRepository, journalsRepository) {
+        this.routinesRepository = routinesRepository;
+        this.journalsRepository = journalsRepository;
     }
-      async create(journalId, routineData) {
-        return await this.createRoutineUseCase.execute(journalId, routineData);
+    async create(journalId, routineData) {
+        // 저널 존재 여부 확인
+        const journal = await this.journalsRepository.findById(journalId);
+        if (!journal) {
+            throw new Error('루틴을 생성할 저널을 찾을 수 없습니다.');
+        }
+
+        // 동일한 루틴 중복 생성 방지
+        const existingRoutineWithSameTitle = await this.routinesRepository.findByJournalIdAndTitle(
+            journalId,
+            routineData.title
+        );
+
+        if (existingRoutineWithSameTitle) {
+            throw new Error('일지에 이미 존재하는 루틴입니다.');
+        }
+
+        // 루틴 생성 데이터 준비 및 저장
+        const dataToCreate = {
+            title: routineData.title,
+            journalId: journalId,
+        };
+
+        try {
+            const newRoutine = await this.routinesRepository.create(dataToCreate);
+            return newRoutine;
+        } catch (error) {
+            // 데이터베이스 오류 등 예외 처리
+            console.error("루틴 생성 중 오류 발생:", error);
+            throw new Error('루틴 생성에 실패했습니다.'); // 사용자에게 보여줄 일반적인 오류 메시지
+        }
     }
-    async update(routineId, updateData) {
-        return await this.updateRoutineUseCase.execute(routineId, updateData);
+    
+     async update(routineId, updateData) {
+        // 루틴 존재 여부 확인
+        const existingRoutine = await this.routinesRepository.findById(routineId);
+        if (!existingRoutine) {
+            throw new Error('업데이트할 루틴을 찾을 수 없습니다.');
+        }
+
+        // 업데이트 사항 여부 확인 및 중복 검사
+        let hasChanges = false;
+        const dataToUpdate = {};
+
+        // title 변경 시 중복 검사 및 업데이트 데이터 설정
+        if (updateData.title !== undefined) {
+            if (updateData.title !== existingRoutine.title) {
+                const existingRoutineWithSameTitle = await this.routinesRepository.findByJournalIdAndTitle(
+                    existingRoutine.journalId,
+                    updateData.title
+                );
+                // 같은 저널 내에서 루틴 이름 중복 검사
+                if (existingRoutineWithSameTitle) {
+                    throw new Error('일지에 이미 존재하는 루틴입니다.');
+                }
+                hasChanges = true;
+                dataToUpdate.title = updateData.title;
+            }
+        }
+
+        // 변경 사항이 없을 경우 업데이트를 진행하지 않음
+        if (!hasChanges) {
+            return { message: "변경 사항이 존재하지 않습니다", routine: existingRoutine };
+        }
+
+        // 루틴 업데이트 시도
+        try {
+            const updatedRoutine = await this.routinesRepository.findByIdAndUpdate(routineId, dataToUpdate);
+            return updatedRoutine;
+        } catch (error) {
+            console.error("루틴 업데이트 중 오류 발생:", error);
+            throw new Error('루틴 업데이트에 실패했습니다.'); 
+        }
     }
 }
 
-export const routinesService = new RoutinesService();
 
-/* 구현해야할 Api 와 기능이 많다보니 서비스 로직이 길어질 것을 고려하여 유스케이스(사용자 기능) 기반 
-아키텍쳐 폴더(routineApp)를 추가로 생성하여, 각 내부에 들어 있는 파일들이 하나의 기능 로직을 담당하도록 작성되었습니다.
-따라서 서비스 폴더안에 기능 로직이 작성되지 않으며, 3계층 레이어의 서비스(어플리케이션) 기능은 app폴더의 파일에서 구현됩니다.
->각 기능을 캡슐화하고 그 기능들을 적절히 꺼내쓸 수 있는 상자역할이 서비스 파일이 된다<정도로 이해해주시면됩니다.*/
+export const routinesService = new RoutinesService(
+    new RoutinesRepository(), // RoutinesRepository의 실제 인스턴스 주입
+    new JournalsRepository()  // JournalsRepository의 실제 인스턴스 주입
+);
