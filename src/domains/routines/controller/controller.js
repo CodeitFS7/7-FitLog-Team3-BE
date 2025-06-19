@@ -58,7 +58,7 @@ export class RoutinesController {
     }
   }
 
-  async getAllRoutines(req, res) {
+  getAllRoutines = async (req, res) => {
     const { journalId } = req.query;
 
     if (!journalId) {
@@ -75,9 +75,9 @@ export class RoutinesController {
     } catch (err) {
       res.status(err.status || 500).json({ message: err.message });
     }
-  }
+  };
 
-  async deleteRoutine(req, res) {
+  deleteRoutine = async (req, res) => {
     const { id } = req.params;
     const userId = req.user?.id;
 
@@ -91,5 +91,5 @@ export class RoutinesController {
     } catch (err) {
       res.status(err.status || 500).json({ message: err.message });
     }
-  }
+  };
 }
