@@ -1,12 +1,9 @@
-// import { routinesService } from '../service/routinesService.js';
+// import { isUUID } from '../../../../src/domains/utils/validator.utils.js';
 
 // export class RoutinesController {
-//   constructor() {
+//   constructor(routinesService) {
 //     this.routinesService = routinesService;
-//     this.createRoutine = this.createRoutine.bind(this);
-//     this.updateRoutine = this.updateRoutine.bind(this);
 //   }
-
 //   async createRoutine(req, res) {
 //     try {
 //       const { journalId } = req.params;
@@ -58,6 +55,41 @@
 //         console.error('루틴 업데이트 중 알 수 없는 오류 발생:', error);
 //         return res.status(500).json({ message: '알 수 없는 서버 오류가 발생했습니다.' });
 //       }
+//     }
+//   }
+
+//   async getAllRoutines(req, res) {
+//     const { journalId } = req.query;
+
+//     if (!journalId) {
+//       return res.status(400).json({ message: 'journalId is required.' });
+//     }
+
+//     if (!isUUID(journalId)) {
+//       return res.status(400).json({ message: 'Invalid journalId format (UUID expected).' });
+//     }
+
+//     try {
+//       const routines = await this.routinesService.getAllRoutines(journalId);
+//       res.status(200).json(routines);
+//     } catch (err) {
+//       res.status(err.status || 500).json({ message: err.message });
+//     }
+//   }
+
+//   async deleteRoutine(req, res) {
+//     const { id } = req.params;
+//     const userId = req.user?.id;
+
+//     if (!isUUID(id)) {
+//       return res.status(400).json({ message: 'Invalid routine ID format (UUID expected).' });
+//     }
+
+//     try {
+//       await this.routinesService.deleteRoutine(id, userId);
+//       res.sendStatus(204);
+//     } catch (err) {
+//       res.status(err.status || 500).json({ message: err.message });
 //     }
 //   }
 // }
