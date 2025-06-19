@@ -14,8 +14,8 @@ const journalsRepository = new JournalsRepository();
 const service = new RoutinesService(repository, journalsRepository);
 const controller = new RoutinesController(service);
 
-router.get('/', controller.getAllRoutines.bind(controller));
-router.delete('/:id', controller.deleteRoutine.bind(controller));
+router.get('/', controller.getAllRoutines);
+router.delete('/:id', controller.deleteRoutine);
 router.post('/:journalId', validateRoutineCreation, controller.createRoutine);
 router.patch('/:routineId', validateRoutineUpdate, controller.updateRoutine);
 
