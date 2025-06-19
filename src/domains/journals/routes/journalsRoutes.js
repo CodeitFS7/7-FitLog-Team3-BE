@@ -5,7 +5,7 @@ import { journalsController } from '../controller/journalsController.js';
 const router = express.Router();
 
 
-router.patch("/journal/:Id", validateJournalPassword, journalsController.updateJournal);
-router.get("/journal", journalsController.getPosts);
+// router.patch("/journal/:Id", validateJournalPassword, journalsController.updateJournal);
+// router.get("/journal", journalsController.getPosts);
 
-export default router;
+export default router; 
