@@ -1,3 +1,4 @@
+import { journalsRouter } from '../../journals/routes/index.js';
 import { prisma } from '../../utils/prisma.js';
 export class EmojisRepository {
   upsertEmoji = async (journalId, emojiType) => {
@@ -22,5 +23,17 @@ export class EmojisRepository {
       },
     });
     return emoji;
+  };
+
+  getEmojisByJournalId = async (jouranlId) => {
+    const emojis = await prisma.emoji.findMany({
+      where: {
+        journalId: jouranlId,
+      },
+      orderBy: {
+        count: 'desc',
+      },
+    });
+    return emojis;
   };
 }
