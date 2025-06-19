@@ -1,7 +1,7 @@
 import { prisma } from '../../utils/prisma.js';
 
 export class RoutinesRepository {
-  /* 루틴 생성 수정o*/
+  /* 루틴 생성 수정*/
   createRoutine = async (journalId, title) => {
     return await prisma.routine.create({
       data: {
@@ -12,14 +12,14 @@ export class RoutinesRepository {
   };
 
   /* 루틴 업데이트 */
-  async findByIdAndUpdate(id, updateData) {
-    return await this.prisma.routine.update({
-      where: { id },
+  updateRoutineById = async (routineId, updateData) => {
+    return await prisma.routine.update({
+      where: { id: routineId },
       data: updateData,
     });
-  }
+  };
 
-  /* 중복 생성 방지 수정o*/
+  /* 중복 생성 방지 */
   findByJournalIdAndTitle = async (journalId, title) => {
     return await prisma.routine.findFirst({
       where: {
@@ -29,10 +29,9 @@ export class RoutinesRepository {
     });
   };
 
-  findByJournalId = async (journalId) => {
-    return prisma.routine.findMany({
-      where: { journalId },
-      orderBy: { createdAt: 'desc' },
+  findRoutineById = async (routineId) => {
+    return await prisma.routine.findUnique({
+      where: { id: routineId },
     });
   };
 
