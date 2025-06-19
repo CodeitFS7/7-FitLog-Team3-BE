@@ -3,38 +3,38 @@ export class RoutinesService {
     this.routinesRepository = routinesRepository;
     this.journalsRepository = journalsRepository;
   }
-  async create(journalId, routineData) {
-    // 저널 존재 여부 확인
+  // 화살표 함수를 사용하여 'this'가 RoutinesService 인스턴스를 정확히 가리키도록 보장합니다.
+  // 화살표 함수로 변경한 자세한 이유는 백엔드 아카이빙 문서로 정리해두었습니다.
+  createRoutine = async (journalId, title) => {
     const journal = await this.journalsRepository.findJournalById(journalId);
+
+    // 저널 존재 여부 확인
     if (!journal) {
-      throw new Error('루틴을 생성할 저널을 찾을 수 없습니다.');
+      // 여기서 에러메시지와, 에러코드를 정해서 에러를 던져주면 에러라우터에서 처리해줍니다.
+      // 아래 코드에는 일지로 되어있어서 통일하기위해서 앞으로 에러코드에서는 저널로되어있는 부분은 일지로 수정하겠습니다.
+      const error = new Error('루틴을 생성할 일지를 찾을 수 없습니다.');
+      error.statusCode = 404;
+      throw error;
     }
 
     // 동일한 루틴 중복 생성 방지
     const existingRoutineWithSameTitle = await this.routinesRepository.findByJournalIdAndTitle(
       journalId,
-      routineData.title
+      title
     );
 
     if (existingRoutineWithSameTitle) {
-      throw new Error('일지에 이미 존재하는 루틴입니다.');
+      const error = new Error('일지에 이미 존재하는 루틴입니다.');
+      error.statusCode = 409;
+      throw error;
     }
 
-    // 루틴 생성 데이터 준비 및 저장
-    const dataToCreate = {
-      title: routineData.title,
-      journalId: journalId,
-    };
-
-    try {
-      const newRoutine = await this.routinesRepository.create(dataToCreate);
-      return newRoutine;
-    } catch (error) {
-      // 데이터베이스 오류 등 예외 처리
-      console.error('루틴 생성 중 오류 발생:', error);
-      throw new Error('루틴 생성에 실패했습니다.'); // 사용자에게 보여줄 일반적인 오류 메시지
-    }
-  }
+    // 서비스로직에서 try catch를 제외한 이유는 백엔드 아카이빙 문서에 정리해두었습니다!
+    // 이 Service가 여러 Repository(Journals, Routines)를 다루므로,
+    // 호출하는 메서드가 어떤 리소스를 생성하는지(createRoutine) 명확히 하기 위해 메서드 명을 변경하였습니다.
+    const newRoutine = await this.routinesRepository.createRoutine(journalId, title);
+    return newRoutine;
+  };
 
   async update(routineId, updateData) {
     // 루틴 존재 여부 확인
