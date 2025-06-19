@@ -3,7 +3,7 @@
 
 /* 보통 비밀번호를 해시코드로 저장해둔다고 하더군요 
 bcrypt 형태로 불러 온다고 합니다. 관련 로직 있는게 좋을 것 같아요  */
-const bcrypt = require("bcrypt"); 
+import bcrypt from 'bcryptjs'; 
 const { getJournalById } = require("../journals/service/journalsService"); 
 
 export const validateJournalPassword = async (req, res, next) => {

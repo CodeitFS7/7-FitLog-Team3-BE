@@ -6,7 +6,7 @@ export class RoutinesController {
       this.routinesService = routinesService;
       this.createRoutine = this.createRoutine.bind(this);
       this.updateRoutine = this.updateRoutine.bind(this);
-  }
+  } 
   async createRoutine(req, res, next) {
     try {
       const { journalId } = req.params; 
