@@ -5,9 +5,7 @@ import morgan from 'morgan';
 import routineRouter from './src/domains/routines/routes/route.js';
 import { journalsRouter } from './src/domains/journals/routes/index.js';
 import { exerciseLogRouter } from './src/domains/exercise-logs/routes/index.js';
-import journalsRouter from './src/domains/journals/routes/journalsRoutes.js';
-import routinesRouter from './src/domains/routines/routes/routinesRoutes.js'; 
-
+import routinesRouter from './src/domains/routines/routes/route.js';
 
 // 환경 변수 사용준비
 dotenv.config();
@@ -23,16 +21,16 @@ app.use('/routines', routineRouter);
 app.get('/', (req, res) => {
   res.send('서버 실행 중');
 });
-app.use('/exerciseLoge', exerciseLogRouter);
 
 app.use('/journals', journalsRouter);
+app.use('/routines', routinesRouter);
+app.use('/exerciseLoge', exerciseLogRouter);
 
 app.use((err, req, res, next) => {
   console.log(err.message);
   res.status(err.status ?? 500).json(err.message);
 });
 
-app.use('/journals', journalsRouter);
 app.use('/routines', routinesRouter);
 
 const PORT = process.env.PORT || 3000;
