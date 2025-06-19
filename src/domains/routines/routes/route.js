@@ -1,16 +1,22 @@
 import express from 'express';
-import { RoutineRepository } from '../repository/repository.js';
-import { RoutineService } from '../service/service.js';
-import { RoutineController } from '../controller/controller.js';
+import { RoutinesRepository } from '../repository/repository.js';
+import { JournalsRepository } from '../../journals/repository/index.js';
+import { RoutinesService } from '../service/service.js';
+import { RoutinesController } from '../controller/controller.js';
+import { validateRoutineCreation } from '../../middlewares/validateRoutineCreation.js';
+import { validateRoutineUpdate } from '../../middlewares/validateRoutineUpdate.js';
 
 const router = express.Router();
 
 // 의존성 주입
-const repository = new RoutineRepository();
-const service = new RoutineService(repository);
-const controller = new RoutineController(service);
+const repository = new RoutinesRepository();
+const journalsRepository = new JournalsRepository();
+const service = new RoutinesService(repository, journalsRepository);
+const controller = new RoutinesController(service);
 
 router.get('/', controller.getAllRoutines.bind(controller));
 router.delete('/:id', controller.deleteRoutine.bind(controller));
+router.post('/:journalId', validateRoutineCreation, controller.createRoutine);
+router.patch('/:routineId', validateRoutineUpdate, controller.updateRoutine);
 
 export default router;
