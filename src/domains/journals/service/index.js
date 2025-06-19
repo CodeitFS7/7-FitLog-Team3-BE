@@ -80,19 +80,27 @@ export class JournalsService {
     return journal;
   };
 
-  deleteJournalById = async (id) => {
-    const journal = await this.journalsRepository.findById(id);
+  deleteJournalById = async (journalId) => {
+    const journal = await this.journalsRepository.findJournalById(journalId);
     if (!journal) {
-      throw new Error('존재하지 않는 journal입니다.');
+      const error = new Error('해당 ID의 일지를 찾을 수 없습니다.');
+      error.statusCode = 404;
+      throw error;
     }
-    return await this.journalsRepository.deleteById(id);
+    return await this.journalsRepository.deleteJournalById(journalId);
   };
 
-  updateJournalById = async (id, updateData) => {
-    const journal = await this.journalsRepository.findById(id);
+  updateJournalById = async (journalId, updateData) => {
+    const journal = await this.journalsRepository.findJournalById(journalId);
     if (!journal) {
-      throw new Error('존재하지 않는 journal입니다.');
+      const error = new Error('해당 ID의 일지를 찾을 수 없습니다.');
+      error.statusCode = 404;
+      throw error;
     }
-    return await this.journalsRepository.updateById(id, updateData);
+    const updatedJournal = await this.journalsRepository.updateJournalById(journalId, updateData);
+
+    // Controller에 반환할 때, 보안을 위해 비밀번호에 대한 데이터는 돌려주지 않음.
+    updatedJournal.password = undefined;
+    return updatedJournal;
   };
-};
+}
