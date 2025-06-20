@@ -5,6 +5,21 @@ export class RoutinesController {
     this.routinesService = routinesService;
   }
 
+  getAllRoutines = async (req, res, next) => {
+    try {
+      const { journalId } = req.query;
+
+      // 유효성 검사는 미들웨어에서 진행하였습니다.
+      // middlewares 폴더의 validateGetRoutinesByJournalId 참고
+      const routines = await this.routinesService.getAllRoutines(journalId);
+
+      res.status(200).json({ data: routines });
+    } catch (error) {
+      // 에러 처리는 에러 라우터에게
+      next(error);
+    }
+  };
+
   // 컨트롤러의 역할은 request에서 받은 데이터를 service에게 넘겨주고,
   // 완성된 데이터(service,repository를 거쳐 완성된 데이터)를 response로 돌려주는 것
   // 에러 처리는 에러 라우터가 담당하기 때문에 에러를 에러라우터에게 넘겨주는 역할까지만 수행합니다.
@@ -32,21 +47,6 @@ export class RoutinesController {
         routine: result,
       });
     } catch (error) {
-      next(error);
-    }
-  };
-
-  getAllRoutines = async (req, res, next) => {
-    try {
-      const { journalId } = req.query;
-
-      // 유효성 검사는 미들웨어에서 진행하였습니다.
-      // middlewares 폴더의 validateGetRoutinesByJournalId 참고
-      const routines = await this.routinesService.getAllRoutines(journalId);
-
-      res.status(200).json({ data: routines });
-    } catch (error) {
-      // 에러 처리는 에러 라우터에게
       next(error);
     }
   };
