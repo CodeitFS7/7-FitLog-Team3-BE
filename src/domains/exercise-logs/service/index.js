@@ -1,70 +1,48 @@
 class ExerciseLogService {
-  constructor(ExerciseLogRepository) {
-    this.ExerciseLogRepository = ExerciseLogRepository;
+  constructor(exerciseLogRepository, journalsRepository) {
+    this.exerciseLogRepository = exerciseLogRepository;
+    this.journalsRepository = journalsRepository;
   }
-
-  async create({ journalId, startTime, endTime, goalTime }) {
+  // 2025-06-20T11:30:00.000Z -
+  // 뺄셈연산이 가능한데 단위가 밀리초(milliseconds, 1/1000초) 단위의 숫자로 돌려줍니다.
+  createExerciseLog = async (journalId, startTime, endTime, goalTime) => {
+    const journal = await this.journalsRepository.findJournalById(journalId);
+    if (!journal) {
+      const error = new Error('해당 ID의 일지를 찾을 수 없습니다.');
+      error.statusCode = 404;
+      throw error;
+    }
     const start = new Date(startTime);
     const end = new Date(endTime);
-
-    //
     const duration = Math.floor((end - start) / 1000); // 총 운동시간(초)
+
     const isCompleted = duration >= goalTime; //총 운동시간이 목표시간 이상이면 true
-    const basePoint = 3; // 목표달성시 기본 포인트 3점
-    const extraPoint = Math.floor(duration / 600); //초과 운동시간
-    const earnedPoints = basePoint + extraPoint; //총 득점
 
-    //db에 저장할 로그 데이터
-    const logData = {
-      journalId,
-      startTime: start,
-      endTime: end,
-      goalTime,
-      isCompleted,
-      earnedPoints,
-    };
-    //journalId가 없을때. (캐시 삭제 등..)
-
-    if (!journalId) {
-      throw new Error('운동일지를 찾을 수 없습니다.');
+    let exercisePoint = 0;
+    if (isCompleted) {
+      const basePoint = 3;
+      const extraPoint = Math.floor(duration / 600);
+      exercisePoint = basePoint + extraPoint;
     }
 
-    //목표시간을 입력하지 않고 타이머를 누르는 경우
-    if (!goalTime) {
-      throw new Error('목표시간은 반드시 설정해야 합니다.');
-    }
+    const logDataToCreate = { journalId, startTime, endTime, goalTime, isCompleted, exercisePoint };
+    const newExerciseLog = await this.exerciseLogRepository.createExerciseLog(logDataToCreate);
 
-    // 숫자를 분:초로 변환
-    const [minStr, secStr] = goalTime.split(':');
-    const min = parseInt(minStr, 10);
-    const sec = parseInt(secStr, 10);
-
-    // 분:초가 숫자가 아닌 것이 입력되면 에러
-    if (isNaN(min) || isNaN(sec)) {
-      throw Error('목표시간은 숫자 형식이어야 합니다.');
-    }
-    const savedLog = await this.ExerciseLogRepository.create(logData);
-
-    return {
-      message: `${earnedPoints} 포인트를 획득했습니다.`,
-      isCompleted,
-      earnedPoints,
-      savedLog,
-    };
-  }
-}
-
-// GET
-const getLatestLog = async (journalId) => {
-  const latestLog = await this.ExerciseLogRepository.findLatestByJournalId(journalId);
-  const totalPoints = await this.ExerciseLogRepository.sumEarnedPoints(journalId);
-
-  return {
-    goalTime: latestLog?.goalTime || 0,
-    earnedPoints: latestLog.earnedPoints || 0,
-    totalearnedPoints: totalPoints || 0,
-    isCompleted: latestLog?.isCompleted,
+    return newExerciseLog;
   };
-};
+
+  getSumExercisePoint = async (journalId) => {
+    const journal = await this.journalsRepository.findJournalById(journalId);
+
+    if (!journal) {
+      const error = new Error('해당 ID의 일지를 찾을 수 없습니다.');
+      error.statusCode = 404;
+      throw error;
+    }
+
+    const sumExercisePoint = await this.exerciseLogRepository.getSumExercisePoint(journalId);
+    return sumExercisePoint;
+  };
+}
 
 export default ExerciseLogService;

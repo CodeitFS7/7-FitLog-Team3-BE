@@ -5,8 +5,9 @@ import { RoutinesService } from '../service/service.js';
 import { RoutinesController } from '../controller/controller.js';
 import { validateRoutineCreation } from '../../middlewares/validateRoutineCreation.js';
 import { validateRoutineUpdate } from '../../middlewares/validateRoutineUpdate.js';
-import { validateGetRoutinesByJournalId } from '../../middlewares/validateGetRoutinesByJournalId.js';
 import { validateDeleteRoutineById } from '../../middlewares/validateDeleteRoutineById.js';
+import { validateJournalId } from '../../middlewares/validateJournalId.js';
+
 const router = express.Router();
 
 // 의존성 주입
@@ -15,8 +16,9 @@ const journalsRepository = new JournalsRepository();
 const service = new RoutinesService(repository, journalsRepository);
 const controller = new RoutinesController(service);
 
-router.get('/', validateGetRoutinesByJournalId, controller.getAllRoutines);
+router.get('/', validateJournalId, controller.getAllRoutines);
 router.delete('/:routineId', validateDeleteRoutineById, controller.deleteRoutine);
+
 router.post('/:journalId', validateRoutineCreation, controller.createRoutine);
 router.patch('/:routineId', validateRoutineUpdate, controller.updateRoutine);
 

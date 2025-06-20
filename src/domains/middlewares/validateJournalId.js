@@ -1,6 +1,6 @@
 import { isUUID } from '../utils/validator.utils.js';
 
-export const validateGetRoutinesByJournalId = (req, res, next) => {
+export const validateJournalId = (req, res, next) => {
   try {
     const { journalId } = req.query;
     if (!isUUID(journalId)) {
