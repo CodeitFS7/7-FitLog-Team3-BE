@@ -24,7 +24,7 @@ app.get('/', (req, res) => {
 
 app.use('/journals', journalsRouter);
 app.use('/routines', routinesRouter);
-app.use('/exerciseLoge', exerciseLogRouter);
+app.use('/exerciseLogs', exerciseLogRouter);
 
 app.use((err, req, res, next) => {
   console.log(err.message);
