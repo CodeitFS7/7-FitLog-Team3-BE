@@ -1,21 +1,21 @@
 import { Router } from 'express';
-import ExerciseLogController from '../controller/index.js';
-import ExerciseLogService from '../service/index.js';
-import ExerciseLogRepository from '../repository/index.js';
+import ExerciseLogsController from '../controller/index.js';
+import ExerciseLogsService from '../service/index.js';
+import ExerciseLogsRepository from '../repository/index.js';
+import { JournalsRepository } from '../../journals/repository/index.js';
+import { validatePostExerciseLog } from '../../middlewares/validatePostExerciseLog.js';
+import { validateJournalId } from '../../middlewares/validateJournalId.js';
 
 export const exerciseLogRouter = Router();
 
 // repository → service → controller
-const repository = new ExerciseLogRepository();
-const service = new ExerciseLogService(repository);
-const controller = new ExerciseLogController(service);
+const repository = new ExerciseLogsRepository();
+const journalsRepository = new JournalsRepository();
+const service = new ExerciseLogsService(repository, journalsRepository);
+const controller = new ExerciseLogsController(service);
 
 // POST /exercise-log
-exerciseLogRouter.post('/exercise-logs', (req, res, next) => {
-  controller.create(req, res, next);
-});
+exerciseLogRouter.post('/:journalId', validatePostExerciseLog, controller.createExerciseLog);
 
 //GET /exercise-logs
-exerciseLogRouter.get('/exercise-logs/:journalId', (req, res, next) => {
-  controller.getLatestLogWithSummary(req, res, next);
-});
+exerciseLogRouter.get('/:journalId', validateJournalId, controller.getSumExercisePoint);
