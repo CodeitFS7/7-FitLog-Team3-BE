@@ -19,3 +19,5 @@ journalsRouter.get('/', validateGetJournalsQuery, controller.getJournals);
 journalsRouter.get('/:journalId', validateJournalIdParam, controller.getJournalById);
 journalsRouter.patch('/:journalId', validatePatchJournals, controller.updateJournalById);
 journalsRouter.delete('/:journalId', validateJournalIdParam, controller.deleteJournalById);
+
+journalsRouter.use('/:journalId/emojis', emojisRouter);

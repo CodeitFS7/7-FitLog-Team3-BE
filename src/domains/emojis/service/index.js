@@ -16,9 +16,14 @@ export class EmojisService {
       throw error;
     }
 
-    const updateEmoji = await this.emojisRepository.upsertEmoji(journalId, emojiType);
+    const updatedEmoji = await this.emojisRepository.upsertEmoji(journalId, emojiType);
+    const responseUpdateEmoji = {
+      emojiType: updatedEmoji.id,
+      journalId: updatedEmoji.journalId,
+      count: updatedEmoji.count,
+    };
 
-    return updateEmoji;
+    return responseUpdateEmoji;
   };
 
   getEmojisByJournalId = async (journalId) => {
@@ -32,6 +37,12 @@ export class EmojisService {
 
     const emojis = await this.emojisRepository.getEmojisByJournalId(journalId);
 
-    return emojis;
+    const responseEmojis = emojis.map((emoji) => ({
+      emojiType: emoji.id,
+      journalId: emoji.journalId,
+      count: emoji.count,
+    }));
+
+    return responseEmojis;
   };
 }
