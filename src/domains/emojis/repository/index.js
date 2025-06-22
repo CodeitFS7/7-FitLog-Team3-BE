@@ -1,4 +1,3 @@
-import { journalsRouter } from '../../journals/routes/index.js';
 import { prisma } from '../../utils/prisma.js';
 export class EmojisRepository {
   upsertEmoji = async (journalId, emojiType) => {
