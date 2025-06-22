@@ -17,7 +17,7 @@ class ExerciseLogController {
         goalTime
       );
 
-      res.status(201).json(newExerciseLog);
+      res.status(201).json({ data: newExerciseLog });
     } catch (error) {
       next(error);
     }
@@ -27,7 +27,7 @@ class ExerciseLogController {
     try {
       const { journalId } = req.params;
       const sumExercisePoint = await this.exerciseLogService.getSumExercisePoint(journalId);
-      res.status(200).json(sumExercisePoint);
+      res.status(200).json({ SumExercisePoint: sumExercisePoint });
     } catch (error) {
       next(error);
     }

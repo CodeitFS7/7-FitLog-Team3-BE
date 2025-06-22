@@ -42,9 +42,6 @@ export const isValidISO8601 = (value) => {
   }
 
   const date = new Date(value);
-  if (isNaN(date.getTime())) {
-    return false;
-  }
 
-  return date.toISOString() === value;
+  return !isNaN(date.getTime());
 };
