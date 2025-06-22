@@ -41,7 +41,8 @@ class ExerciseLogService {
     }
 
     const sumExercisePoint = await this.exerciseLogRepository.getSumExercisePoint(journalId);
-    return sumExercisePoint;
+    const responseSumExercisePoint = sumExercisePoint?._sum?.exercisePoint ?? 0;
+    return responseSumExercisePoint;
   };
 }
 
