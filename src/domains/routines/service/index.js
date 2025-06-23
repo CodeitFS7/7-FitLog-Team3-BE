@@ -101,4 +101,48 @@ export class RoutinesService {
 
     return await this.routinesRepository.deleteRoutineById(routineId);
   };
+
+  updateCheckRoutine = async (routineId, journalId, date) => {
+    const journal = await this.journalsRepository.findJournalById(journalId);
+    if (!journal) {
+      const error = new Error('해당 ID의 일지를 찾을 수 없습니다.');
+      error.statusCode = 404;
+      throw error;
+    }
+
+    const routine = await this.routinesRepository.findRoutineById(routineId);
+    if (!routine) {
+      const error = new Error('해당 ID의 루틴을 찾을 수 없습니다.');
+      error.statusCode = 404;
+      throw error;
+    }
+
+    if (journalId !== routine.journalId) {
+      const error = new Error('해당 일지에 속하지 않는 루틴이므로 변경할 권한이 없습니다.');
+      error.statusCode = 403;
+      throw error;
+    }
+
+    const checkDate = new Date(date);
+    let isCompleted;
+    const existingCheckRoutine = await this.routinesRepository.findRoutineCheckByRoutineIdAndDate(
+      routineId,
+      checkDate
+    );
+
+    if (existingCheckRoutine) {
+      isCompleted = !existingCheckRoutine.isCompleted;
+    } else {
+      isCompleted = true;
+    }
+
+    const updatedCheckRoutine = await this.routinesRepository.upsertRoutineCheck(
+      routineId,
+      journalId,
+      checkDate,
+      isCompleted
+    );
+
+    return updatedCheckRoutine;
+  };
 }
