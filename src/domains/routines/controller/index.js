@@ -76,4 +76,18 @@ export class RoutinesController {
       next(error);
     }
   };
+
+  getWeeklyRoutineStatus = async (req, res, next) => {
+    try {
+      const { journalId, date } = req.query;
+
+      const weeklyRoutinesSatatus = await this.routinesService.getWeeklyRoutineStatus(
+        journalId,
+        date
+      );
+      res.status(200).json(weeklyRoutinesSatatus);
+    } catch (error) {
+      next(error);
+    }
+  };
 }

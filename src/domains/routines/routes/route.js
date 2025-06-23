@@ -8,6 +8,7 @@ import { validateRoutineUpdate } from '../../middlewares/validateRoutineUpdate.j
 import { validateDeleteRoutineById } from '../../middlewares/validateDeleteRoutineById.js';
 import { validateJournalIdQuery } from '../../middlewares/validateJournalIdQuery.js';
 import { validateUpdateCheckRoutine } from '../../middlewares/validateUpdateCheckRoutine.js';
+import { validateWeeklyStatusQuery } from '../../middlewares/validateWeeklyStatusQuery.js';
 const router = express.Router();
 
 // 의존성 주입
@@ -29,5 +30,6 @@ router.post(
   validateUpdateCheckRoutine,
   controller.updateCheckRoutine
 );
+router.get('/weeklyStatus', validateWeeklyStatusQuery, controller.getWeeklyRoutineStatus);
 
 export default router;
