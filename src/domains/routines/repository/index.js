@@ -40,6 +40,9 @@ export class RoutinesRepository {
       where: {
         journalId: journalId,
       },
+      orderBy: {
+        createdAt: 'asc',
+      },
     });
     return routines;
   };
@@ -86,6 +89,25 @@ export class RoutinesRepository {
         routineId: routineId,
         date: checkDate,
         isCompleted: isCompleted,
+      },
+    });
+  };
+
+  findRoutineChecksByJournalIdAndDateRange = async (journalId, startDate, endDate) => {
+    const startOfDay = new Date(startDate);
+    startOfDay.setUTCHours(0, 0, 0, 0);
+
+    const endOfDay = new Date(endDate);
+    endOfDay.setUTCHours(23, 59, 59, 999); // 해당 날짜의 마지막 순간까지 포함
+
+    return await prisma.routineCheck.findMany({
+      where: {
+        journalId: journalId,
+        date: {
+          gte: startOfDay,
+          lte: endOfDay,
+        },
+        isCompleted: true,
       },
     });
   };
