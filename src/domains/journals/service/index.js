@@ -103,4 +103,21 @@ export class JournalsService {
     updatedJournal.password = undefined;
     return updatedJournal;
   };
+
+  verifyJournalPassword = async (journalId, inputPassword) => {
+    const journal = await this.journalsRepository.findJournalById(journalId);
+    if (!journal) {
+      const error = new Error('해당 ID의 일지를 찾을 수 없습니다.');
+      error.statusCode = 404;
+      throw error;
+    }
+
+    if (journal.password !== inputPassword) {
+      const error = new Error('비밀번호가 일치하지 않습니다.');
+      error.statusCode = 401;
+      throw error;
+    }
+
+    return true;
+  };
 }
