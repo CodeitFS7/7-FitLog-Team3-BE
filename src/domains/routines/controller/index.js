@@ -1,17 +1,17 @@
-import { isUUID } from '../../../../src/domains/utils/validator.utils.js';
+import { isUUID } from '../../utils/validator.utils.js';
 
 export class RoutinesController {
   constructor(routinesService) {
     this.routinesService = routinesService;
   }
 
-  getAllRoutines = async (req, res, next) => {
+  getAllRoutinesByJournalId = async (req, res, next) => {
     try {
       const { journalId } = req.query;
 
       // 유효성 검사는 미들웨어에서 진행하였습니다.
       // middlewares 폴더의 validateGetRoutinesByJournalId 참고
-      const routines = await this.routinesService.getAllRoutines(journalId);
+      const routines = await this.routinesService.getAllRoutinesByJournalId(journalId);
 
       res.status(200).json({ data: routines });
     } catch (error) {
@@ -42,10 +42,7 @@ export class RoutinesController {
       const { routineId } = req.params;
       const updateData = req.body;
       const result = await this.routinesService.updateRoutineById(routineId, updateData);
-      res.status(200).json({
-        message: '루틴 수정이 성공했습니다.',
-        routine: result,
-      });
+      res.status(200).json({ result });
     } catch (error) {
       next(error);
     }

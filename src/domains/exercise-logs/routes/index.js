@@ -4,7 +4,7 @@ import ExerciseLogsService from '../service/index.js';
 import ExerciseLogsRepository from '../repository/index.js';
 import { JournalsRepository } from '../../journals/repository/index.js';
 import { validatePostExerciseLog } from '../../middlewares/validatePostExerciseLog.js';
-import { validateJournalId } from '../../middlewares/validateJournalId.js';
+import { validateJournalIdParam } from '../../middlewares/validateJournalIdParam.js';
 
 export const exerciseLogRouter = Router();
 
@@ -18,4 +18,4 @@ const controller = new ExerciseLogsController(service);
 exerciseLogRouter.post('/:journalId', validatePostExerciseLog, controller.createExerciseLog);
 
 //GET /exercise-logs
-exerciseLogRouter.get('/:journalId', validateJournalId, controller.getSumExercisePoint);
+exerciseLogRouter.get('/:journalId', validateJournalIdParam, controller.getSumExercisePoint);

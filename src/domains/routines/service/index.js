@@ -73,9 +73,9 @@ export class RoutinesService {
     };
   };
 
-  getAllRoutines = async (journalId) => {
+  getAllRoutinesByJournalId = async (journalId) => {
     // 일지에 해당하는 루틴을 가져왔을때, 루틴이 없을 경우 에러
-    const routines = await this.routinesRepository.findRoutineByJournalId(journalId);
+    const routines = await this.routinesRepository.getAllRoutinesByJournalId(journalId);
     if (!routines) {
       const error = new Error('루틴이 존재하지 않습니다.');
       error.status = 404;
