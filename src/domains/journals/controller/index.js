@@ -65,4 +65,15 @@ export class JournalsController {
       next(error);
     }
   };
+
+  verifyJournalPassword = async (req, res, next) => {
+    try {
+      const { journalId } = req.params;
+      const { password } = req.body;
+      const result = await this.journalsService.verifyJournalPassword(journalId, password);
+      res.status(200).json({ success: result });
+    } catch (error) {
+      next(error);
+    }
+  };
 }
