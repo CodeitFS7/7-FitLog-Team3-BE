@@ -145,4 +145,81 @@ export class RoutinesService {
 
     return updatedCheckRoutine;
   };
+
+  getWeeklyRoutineStatus = async (journalId, date) => {
+    const journal = await this.journalsRepository.findJournalById(journalId);
+    if (!journal) {
+      const error = new Error('해당 ID의 일지를 찾을 수 없습니다.');
+      error.statusCode = 404;
+      throw error;
+    }
+
+    const routines = await this.routinesRepository.getAllRoutinesByJournalId(journalId);
+    if (routines.length === 0) {
+      return { routines: [], totalCount: 0 };
+    }
+
+    const baseDate = new Date(date);
+    baseDate.setUTCHours(0, 0, 0, 0);
+
+    // 확인해야할 날짜 baseDate가 무슨 요일인지 확인
+    const dayOfWeek = baseDate.getUTCDay();
+
+    // 최종적으로 반환할 데이터의 시작날(월요일)의 날짜를 구하는 로직
+    let diffToMonday;
+    if (dayOfWeek === 0) {
+      diffToMonday = dayOfWeek - 6;
+    } else {
+      diffToMonday = 1 - dayOfWeek;
+    }
+
+    // baseDate에 계산된 diffToMonday를 더하여 해당 주의 월요일 날짜를 구함
+    const mondayOfWeek = new Date(baseDate);
+    mondayOfWeek.setUTCDate(baseDate.getUTCDate() + diffToMonday);
+    mondayOfWeek.setUTCHours(0, 0, 0, 0);
+
+    // 계산된 월요일을 기준으로 해당 주의 일요일을 계산
+    const sundayOfWeek = new Date(mondayOfWeek);
+    sundayOfWeek.setUTCDate(mondayOfWeek.getUTCDate() + 6);
+    sundayOfWeek.setUTCHours(23, 59, 59, 999);
+
+    const weeklyChecks = await this.routinesRepository.findRoutineChecksByJournalIdAndDateRange(
+      journalId,
+      mondayOfWeek,
+      sundayOfWeek
+    );
+
+    const daysofWeekNames = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
+    const now = new Date();
+    now.setUTCHours(0, 0, 0, 0);
+
+    const routinesWithStatus = routines.map((routine) => {
+      const weeklyCompletion = {};
+      for (let i = 0; i < 7; i++) {
+        const currentDay = new Date(mondayOfWeek);
+        currentDay.setUTCDate(mondayOfWeek.getUTCDate() + i);
+        currentDay.setUTCHours(0, 0, 0, 0);
+
+        const dayKey = daysofWeekNames[currentDay.getUTCDay()];
+
+        let isCompletedToday = false;
+        if (currentDay.getTime() > now.getTime()) {
+          isCompletedToday = false;
+        } else {
+          isCompletedToday = weeklyChecks.some(
+            (check) =>
+              check.routineId === routine.id &&
+              check.isCompleted === true &&
+              check.date.getTime() === currentDay.getTime()
+          );
+        }
+        weeklyCompletion[dayKey] = isCompletedToday;
+      }
+      return {
+        ...routine,
+        weeklyCompletion: weeklyCompletion,
+      };
+    });
+    return { routines: routinesWithStatus, totalCount: routines.length };
+  };
 }
