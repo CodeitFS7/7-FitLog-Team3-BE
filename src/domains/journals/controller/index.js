@@ -26,7 +26,7 @@ export class JournalsController {
       const queryParams = req.query;
       const journalsData = await this.journalsService.findAllJournals(queryParams);
 
-      return res.status(200).json({ data: journalsData });
+      return res.status(200).json(journalsData);
     } catch (error) {
       next(error);
     }
