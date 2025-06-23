@@ -49,24 +49,44 @@ export class RoutinesRepository {
       where: { id },
     });
   };
+
+  findRoutineCheckByRoutineIdAndDate = async (routineId, date) => {
+    const queryDate = new Date(date);
+    queryDate.setUTCHours(0, 0, 0, 0);
+
+    return await prisma.routineCheck.findUnique({
+      where: {
+        routineId_date: {
+          routineId: routineId,
+          date: queryDate,
+        },
+      },
+    });
+  };
+
+  upsertRoutineCheck = async (routineId, journalId, date, isCompleted) => {
+    const checkDate = new Date(date);
+    checkDate.setUTCHours(0, 0, 0, 0); // UTC 자정으로 설정
+
+    return await prisma.routineCheck.upsert({
+      where: {
+        // `@@unique([routineId, date])` 복합 유니크 키를 활용하여
+        // 해당 날짜의 특정 루틴 체크 기록을 찾거나 새로 만듭니다.
+        routineId_date: {
+          routineId: routineId,
+          date: checkDate,
+        },
+      },
+      update: {
+        isCompleted: isCompleted,
+      },
+      create: {
+        // 기록이 없으면 새로 생성합니다.
+        journalId: journalId,
+        routineId: routineId,
+        date: checkDate,
+        isCompleted: isCompleted,
+      },
+    });
+  };
 }
-//   async findByJournalId(journalId) {
-//     return prisma.routine.findMany({
-//       where: { journalId },
-//       orderBy: { createdAt: 'desc' },
-//     });
-//   }
-
-//   async findById(id) {
-//     return prisma.routine.findUnique({
-//       where: { id },
-//       include: { journal: true },
-//     });
-//   }
-
-//   async deleteById(id) {
-//     return prisma.routine.delete({
-//       where: { id },
-//     });
-//   }
-// }

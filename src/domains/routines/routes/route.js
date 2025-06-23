@@ -7,7 +7,7 @@ import { validateRoutineCreation } from '../../middlewares/validateRoutineCreati
 import { validateRoutineUpdate } from '../../middlewares/validateRoutineUpdate.js';
 import { validateDeleteRoutineById } from '../../middlewares/validateDeleteRoutineById.js';
 import { validateJournalIdQuery } from '../../middlewares/validateJournalIdQuery.js';
-
+import { validateUpdateCheckRoutine } from '../../middlewares/validateUpdateCheckRoutine.js';
 const router = express.Router();
 
 // 의존성 주입
@@ -21,5 +21,13 @@ router.delete('/:routineId', validateDeleteRoutineById, controller.deleteRoutine
 
 router.post('/:journalId', validateRoutineCreation, controller.createRoutine);
 router.patch('/:routineId', validateRoutineUpdate, controller.updateRoutine);
+router.post('/:routineId');
+
+//루틴체크에 대한 API
+router.post(
+  '/:routineId/updateCheckRoutine',
+  validateUpdateCheckRoutine,
+  controller.updateCheckRoutine
+);
 
 export default router;
