@@ -59,4 +59,21 @@ export class RoutinesController {
       next(error);
     }
   };
+
+  updateCheckRoutine = async (req, res, next) => {
+    try {
+      const { routineId } = req.params;
+      const { journalId } = req.query;
+      const { date } = req.body;
+
+      const updatedCheckRoutine = await this.routinesService.updateCheckRoutine(
+        routineId,
+        journalId,
+        date
+      );
+      res.status(200).json({ data: updatedCheckRoutine });
+    } catch (error) {
+      next(error);
+    }
+  };
 }
