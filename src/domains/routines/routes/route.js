@@ -1,12 +1,12 @@
 import express from 'express';
-import { RoutinesRepository } from '../repository/repository.js';
+import { RoutinesRepository } from '../repository/index.js';
 import { JournalsRepository } from '../../journals/repository/index.js';
-import { RoutinesService } from '../service/service.js';
-import { RoutinesController } from '../controller/controller.js';
+import { RoutinesService } from '../service/index.js';
+import { RoutinesController } from '../controller/index.js';
 import { validateRoutineCreation } from '../../middlewares/validateRoutineCreation.js';
 import { validateRoutineUpdate } from '../../middlewares/validateRoutineUpdate.js';
 import { validateDeleteRoutineById } from '../../middlewares/validateDeleteRoutineById.js';
-import { validateJournalId } from '../../middlewares/validateJournalId.js';
+import { validateJournalIdQuery } from '../../middlewares/validateJournalIdQuery.js';
 
 const router = express.Router();
 
@@ -16,7 +16,7 @@ const journalsRepository = new JournalsRepository();
 const service = new RoutinesService(repository, journalsRepository);
 const controller = new RoutinesController(service);
 
-router.get('/', validateJournalId, controller.getAllRoutines);
+router.get('/', validateJournalIdQuery, controller.getAllRoutinesByJournalId);
 router.delete('/:routineId', validateDeleteRoutineById, controller.deleteRoutine);
 
 router.post('/:journalId', validateRoutineCreation, controller.createRoutine);

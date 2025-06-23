@@ -35,7 +35,7 @@ export class RoutinesRepository {
     });
   };
 
-  findRoutineByJournalId = async (journalId) => {
+  getAllRoutinesByJournalId = async (journalId) => {
     const routines = await prisma.routine.findMany({
       where: {
         journalId: journalId,
