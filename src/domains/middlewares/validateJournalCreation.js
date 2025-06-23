@@ -7,7 +7,29 @@ import {
 } from '../utils/validator.utils.js';
 export const validateCreateJournal = (req, res, next) => {
   try {
-    const { title, nickname, description, password, background } = req.body;
+    const {
+      title,
+      nickname,
+      description,
+      password,
+      background,
+      id,
+      createdAt,
+      updatedAt,
+      routinePoint,
+      ...restBody
+    } = req.body;
+
+    if (createdAt || updatedAt || routinePoint || id) {
+      throw new Error(
+        '유효하지 않은 필드(createdAt, updatedAt, routinePoint, id)가 포함되어 있습니다.'
+      );
+    }
+
+    if (Object.keys(restBody).length > 0) {
+      const unexpectedFields = Object.keys(restBody).join(', ');
+      throw new Error(`예상치 못한 필드(${unexpectedFields})가 포함되어 있습니다.`);
+    }
 
     // title 유효성 검사
     if (!isRequiredString(title)) {
@@ -60,4 +82,3 @@ export const validateCreateJournal = (req, res, next) => {
     next(error);
   }
 };
-
