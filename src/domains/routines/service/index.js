@@ -143,6 +143,28 @@ export class RoutinesService {
       isCompleted
     );
 
+    let pointChange = 0;
+
+    if (
+      isCompleted === true &&
+      (!existingCheckRoutine || existingCheckRoutine.isCompleted === false)
+    ) {
+      pointChange = 1;
+    }
+    // 미완료로 변경됨: 이전에는 true였는데, 이제 false가 된 경우 (-1점)
+    else if (
+      isCompleted === false &&
+      existingCheckRoutine &&
+      existingCheckRoutine.isCompleted === true
+    ) {
+      pointChange = -1;
+    }
+
+    if (pointChange !== 0) {
+      // 점수 변경이 있는 경우에만 업데이트 호출
+      await this.journalsRepository.updateRoutinePoint(journalId, pointChange);
+    }
+
     return updatedCheckRoutine;
   };
 

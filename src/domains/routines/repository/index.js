@@ -85,8 +85,8 @@ export class RoutinesRepository {
       },
       create: {
         // 기록이 없으면 새로 생성합니다.
-        journalId: journalId,
         routineId: routineId,
+        journalId: journalId,
         date: checkDate,
         isCompleted: isCompleted,
       },
