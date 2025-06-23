@@ -48,4 +48,16 @@ export class JournalsRepository {
 
     return updatedJournal;
   };
+
+  updateRoutinePoint = async (journalId, pointChange) => {
+    return await prisma.journal.update({
+      where: { id: journalId },
+      data: {
+        routinePoint: {
+          increment: pointChange, // pointChange 값만큼 routinePoint 필드를 증감시킵니다.
+          // pointChange가 1이면 +1, -1이면 -1이 됩니다.
+        },
+      },
+    });
+  };
 }
