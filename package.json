@@ -3,9 +3,10 @@
   "version": "1.0.0",
   "scripts": {
     "dev": "nodemon server.js",
-    "start": "node server.js",
+    "start": "npx prisma migrate deploy && node server.js",
     "lint": "eslint .",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "db:reset": "npx prisma migrate reset --skip-seed"
   },
   "dependencies": {
     "@prisma/client": "^5.4.2",
