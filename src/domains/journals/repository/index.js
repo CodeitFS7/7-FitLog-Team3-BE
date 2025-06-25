@@ -15,8 +15,16 @@ export class JournalsRepository {
   };
 
   findAllJournalsWithOptions = async (options) => {
+
+    const findManyOptions = {
+      ...options,
+      include: {
+        emoji: true,
+      },
+    };
     const [journals, totalCount] = await prisma.$transaction([
-      prisma.journal.findMany(options),
+      prisma.journal.findMany(findManyOptions),
+
 
       prisma.journal.count({ where: options.where }),
     ]);
@@ -27,6 +35,9 @@ export class JournalsRepository {
   findJournalById = async (journalId) => {
     const journal = await prisma.journal.findUnique({
       where: { id: journalId },
+      include: {
+        emoji: true,
+      },
     });
 
     return journal;
