@@ -1,7 +1,9 @@
 export class JournalsService {
   journalsRepository;
-  constructor(journalsRepository) {
+  exerciseLogsService;
+  constructor(journalsRepository, exerciseLogsService) {
     this.journalsRepository = journalsRepository;
+    this.exerciseLogsService = exerciseLogsService;
   }
 
   createJournal = async (title, nickname, description, password, background) => {
@@ -57,9 +59,21 @@ export class JournalsService {
     const [journals, totalCount] =
       await this.journalsRepository.findAllJournalsWithOptions(prismaOptions);
 
+    const journalsWithExercisePoints = await Promise.all(
+      journals.map(async (journal) => {
+        // journal.id를 사용하여 ExerciseLogsService의 getSumExercisePoint 호출
+        const sumExercisePointData = await this.exerciseLogsService.getSumExercisePoint(journal.id);
+        // getSumExercisePoint는 숫자 값만 반환하도록 서비스에서 가공했으니, 바로 사용
+        return {
+          ...journal,
+          totalExercisePoint: sumExercisePointData,
+        };
+      })
+    );
+
     // 보안을 위해 응답 데이터에서 비밀번호 필드를 제거
-    const journalsWithoutPassword = journals.map((journal) => {
-      const { password, ...rest } = journal;
+    const journalsWithoutPassword = journalsWithExercisePoints.map((journal) => {
+      const { password, ...rest } = journal; // password 필드를 제외하고 나머지 필드를 가져옴
       return rest;
     });
 
